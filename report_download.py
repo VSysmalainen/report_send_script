@@ -1,9 +1,11 @@
-from main_env import login, password, browser
 import os.path
 import time
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver import EdgeOptions, ChromeOptions
+
+from main_env import login, password, browser, main_url, second_url
 
 
 download_dir = os.path.dirname(os.path.abspath(__file__)) + '\\files'
@@ -36,7 +38,7 @@ def download_file():
 
     driver.maximize_window()
 
-    driver.get("http://report.rzd.internal:8080/")
+    driver.get(main_url)
 
     user_id_button = driver.find_element(By.XPATH, "/html/body[@id='loginPage']/div[@id='frame']/div[@class='content']/div[@id='display']/div[@class='wrapper']/form[@id='loginForm']/div[@id='login']/div[@class='content hasFooter ']/div[@class='body  ']/div[@class='inputSection']/fieldset[1]/input[@id='j_username']")
     user_id_button.send_keys(login)
@@ -49,7 +51,7 @@ def download_file():
     login_button.click()
     time.sleep(5)
 
-    driver.get("http://report.rzd.internal:8080/jasperserver/flow.html?_flowId=viewReportFlow&_flowId=viewReportFlow&ParentFolderUri=%2FReports%2FCase&reportUnit=%2FReports%2FCase%2FDaily&standAlone=true")
+    driver.get(second_url)
     time.sleep(5)
 
     apply_button = driver.find_element(By.XPATH, '//*[@id="apply"]')
