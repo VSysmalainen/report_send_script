@@ -7,10 +7,10 @@ from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 
 from report_download import download_file
-from main_env import *
+from env_test import *
 
 
-FILES_DIR = os.path.dirname(__file__) + '\\files'
+files_dir = os.path.dirname(__file__) + '\\files'
 
 
 # Переименование файла с именем под текущую дату
@@ -18,13 +18,13 @@ def rename_file():
     current_date = datetime.now().strftime("%d%m%Y")
     old_filename = "Daily.pdf"
     new_filename = f"{current_date}.pdf"
-    old_filepath = os.path.join(FILES_DIR, old_filename)
-    new_filepath = os.path.join(FILES_DIR, new_filename)
+    old_filepath = os.path.join(files_dir, old_filename)
+    new_filepath = os.path.join(files_dir, new_filename)
     try:
         os.rename(old_filepath, new_filepath)
         print(f"Файл успешно переименован в {new_filename}")
     except FileNotFoundError:
-        print(f"Файл {old_filename} не найден в папке {FILES_DIR}")
+        print(f"Файл {old_filename} не найден в папке {files_dir}")
     except Exception as e:
         print(f"Произошла ошибка при переименовании файла: {e}")
     return new_filename
@@ -32,14 +32,15 @@ def rename_file():
 
 # Возвращает корректный путь до файла
 def get_path(filename: str):
-    return os.path.join(FILES_DIR, filename)
+    return os.path.join(files_dir, filename)
 
 
-download_file(browser, report_url, login, password)
+download_file(browser, files_dir, report_url, login, password)
 
 new_file_name = rename_file()
 
 PDF_FILE = get_path(new_file_name)
+
 
 # Сообщение
 message = MIMEMultipart()
