@@ -6,7 +6,6 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 
-import main_env
 from report_download import download_file
 from main_env import *
 
@@ -14,6 +13,7 @@ from main_env import *
 FILES_DIR = os.path.dirname(__file__) + '\\files'
 
 
+# Переименование файла с именем под текущую дату
 def rename_file():
     current_date = datetime.now().strftime("%d%m%Y")
     old_filename = "Daily.pdf"
@@ -30,27 +30,21 @@ def rename_file():
     return new_filename
 
 
+# Возвращает корректный путь до файла
 def get_path(filename: str):
-    # возвращает корректный путь до файла
     return os.path.join(FILES_DIR, filename)
 
 
-download_file()
+download_file(browser, report_url, login, password)
 
 new_file_name = rename_file()
 
 PDF_FILE = get_path(new_file_name)
 
-
-# Параметры электронной почты
-sender_email = main_env.sender_email
-receiver_email = [main_env.receiver_email]
-subject = main_env.subject
-
 # Сообщение
 message = MIMEMultipart()
 message["From"] = sender_email
-message["To"] = ", ".join(receiver_email)  # receiver_email
+message["To"] = receiver_email
 message["Subject"] = subject
 
 # Текст письма
@@ -62,12 +56,6 @@ with open(PDF_FILE, "rb") as pdf_file:
     attachment = MIMEApplication(pdf_file.read(), _subtype="pdf")
     attachment.add_header("Content-Disposition", f"attachment; filename= {PDF_FILE[-12:]}")
     message.attach(attachment)
-
-# Подключение к SMTP-серверу
-smtp_server = main_env.smtp_server
-smtp_port = main_env.smtp_port
-smtp_username = main_env.smtp_username
-smtp_password = main_env.smtp_password
 
 with smtplib.SMTP(smtp_server, smtp_port) as server:
     server.starttls()

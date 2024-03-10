@@ -4,14 +4,14 @@ import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver import EdgeOptions, ChromeOptions
-
-from main_env import login, password, browser, main_url, second_url
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 
 download_dir = os.path.dirname(os.path.abspath(__file__)) + '\\files'
 
 
-def download_file():
+def download_file(browser, report_url, login, password):
     if browser == 'Edge':
         options = EdgeOptions()
         options.add_experimental_option('prefs', {
@@ -38,34 +38,28 @@ def download_file():
 
     driver.maximize_window()
 
-    driver.get(main_url)
+    driver.get(report_url)
 
-    user_id_button = driver.find_element(By.XPATH, "/html/body[@id='loginPage']/div[@id='frame']/div[@class='content']/div[@id='display']/div[@class='wrapper']/form[@id='loginForm']/div[@id='login']/div[@class='content hasFooter ']/div[@class='body  ']/div[@class='inputSection']/fieldset[1]/input[@id='j_username']")
-    user_id_button.send_keys(login)
+    # Вводим логин
+    driver.find_element(By.XPATH, '//*[@id="j_username"]').send_keys(login)
 
-    pass_button = driver.find_element(By.XPATH, "/html/body[@id='loginPage']/div[@id='frame']/div[@class='content']/div[@id='display']/div[@class='wrapper']/form[@id='loginForm']/div[@id='login']/div[@class='content hasFooter ']/div[@class='body  ']/div[@class='inputSection']/fieldset[1]/input[@id='j_password_pseudo']")
-    pass_button.send_keys(password)
-    time.sleep(1)
+    # Вводим пароль
+    driver.find_element(By.XPATH, '//*[@id="j_password_pseudo"]').send_keys(password)
 
-    login_button = driver.find_element(By.XPATH, "/html/body[@id='loginPage']/div[@id='frame']/div[@class='content']/div[@id='display']/div[@class='wrapper']/form[@id='loginForm']/div[@id='login']/div[@class='content hasFooter ']/div[@class='footer ']/div[@class='inputSection']/button[@id='submitButton']/span[@class='wrap']")
-    login_button.click()
-    time.sleep(5)
+    # Ожидание кликабельности кнопки Login и клик по ней
+    WebDriverWait(driver, 2).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="submitButton"]'))).click()
 
-    driver.get(second_url)
-    time.sleep(5)
+    # Ожидание кликабельности кнопки Apply и клик по ней
+    WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="apply"]'))).click()
 
-    apply_button = driver.find_element(By.XPATH, '//*[@id="apply"]')
-    apply_button.click()
+    # Ожидание кликабельности кнопки Ok и клик по ней
+    WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="ok"]'))).click()
+
+    # Ожидание кликабельности кнопки Menu и клик по ней
+    WebDriverWait(driver, 2).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="export"]'))).click()
+
+    # Находим в выпадающем списке Menu нужный элемент и кликаем по нему, скачивается файл
+    driver.find_elements(By.CSS_SELECTOR, "[id*=menuList_simpleAction]")[0].click()
     time.sleep(2)
 
-    ok_button = driver.find_element(By.XPATH, '//*[@id="ok"]')
-    ok_button.click()
-    time.sleep(2)
 
-    menu_icon = driver.find_element(By.XPATH, '//*[@id="export"]')
-    menu_icon.click()
-    time.sleep(1)
-
-    menu_list = driver.find_elements(By.CSS_SELECTOR, "[id*=menuList_simpleAction]")
-    menu_list[0].click()
-    time.sleep(2)
