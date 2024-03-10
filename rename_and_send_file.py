@@ -7,7 +7,7 @@ from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 
 from report_download import download_file
-from env_test import *
+from main_env import *
 
 
 files_dir = os.path.dirname(__file__) + '\\files'
