@@ -1,4 +1,3 @@
-import os.path
 import time
 
 from selenium import webdriver
@@ -8,14 +7,11 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 
-download_dir = os.path.dirname(os.path.abspath(__file__)) + '\\files'
-
-
-def download_file(browser, report_url, login, password):
+def download_file(browser, files_dir, report_url, login, password):
     if browser == 'Edge':
         options = EdgeOptions()
         options.add_experimental_option('prefs', {
-            "download.default_directory": download_dir,
+            "download.default_directory": files_dir,
             "download.prompt_for_download": False,
             "safebrowsing.enabled": "false",
             "plugins.always_open_pdf_externally": True
@@ -25,7 +21,7 @@ def download_file(browser, report_url, login, password):
     elif browser == 'Chrome':
         options = ChromeOptions()
         options.add_experimental_option('prefs', {
-            "download.default_directory": download_dir,
+            "download.default_directory": files_dir,
             "download.prompt_for_download": False,
             "safebrowsing.enabled": "false",
             "plugins.always_open_pdf_externally": True
