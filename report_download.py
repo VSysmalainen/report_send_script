@@ -7,7 +7,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 
-def download_file(browser, files_dir, report_url, login, password):
+def download_file(browser: str, files_dir: str, report_url: str, login: str, password: str):
     if browser == 'Edge':
         options = EdgeOptions()
         options.add_experimental_option('prefs', {
